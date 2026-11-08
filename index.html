@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Samuel Mendes | Portfólio Espacial</title>
+  <style>
+    :root {
+      --bg-dark: #050714;
+      --card-bg: rgba(15, 23, 42, 0.75);
+      --primary-cyan: #00f0ff;
+      --primary-purple: #7000ff;
+      --accent-red: #ff0055;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    #space-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 5%;
+      background: rgba(5, 7, 20, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      background: linear-gradient(45deg, var(--primary-cyan), var(--primary-purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-transform: uppercase;
+    }
+
+    nav ul {
+      display: flex;
+      list-style: none;
+      gap: 2rem;
+    }
+
+    nav a {
+      color: var(--text-main);
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      font-size: 0.95rem;
+      letter-spacing: 1px;
+    }
+
+    nav a:hover {
+      color: var(--primary-cyan);
+      text-shadow: 0 0 10px var(--primary-cyan);
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 5rem;
+    }
+
+    section {
+      scroll-margin-top: 100px;
+    }
+
+    .hero-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
+
+    .bio-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      border-radius: 20px;
+      padding: 3rem;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 0 30px rgba(0, 240, 255, 0.15);
+      position: relative;
+      overflow: hidden;
+      max-width: 800px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.4rem 1.2rem;
+      background: rgba(0, 240, 255, 0.1);
+      border: 1px solid var(--primary-cyan);
+      color: var(--primary-cyan);
+      border-radius: 50px;
+      font-size: 0.85rem;
+      margin-bottom: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 600;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.2;
+    }
+
+    h1 span {
+      background: linear-gradient(90deg, var(--primary-cyan), #ffffff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .bio-card p {
+      color: var(--text-muted);
+      line-height: 1.8;
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+    }
+
+    .cta-group {
+      display: flex;
+      gap: 1.5rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.8rem 2rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: linear-gradient(45deg, var(--primary-purple), var(--primary-cyan));
+      color: #fff;
+      border: none;
+      box-shadow: 0 0 15px rgba(112, 0, 255, 0.4);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 25px rgba(0, 240, 255, 0.6);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--primary-cyan);
+      border: 1px solid var(--primary-cyan);
+    }
+
+    .section-title {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(0, 240, 255, 0.5), transparent);
+    }
+
+    .hobbies-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .hobby-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 2rem 1.5rem;
+      border-radius: 16px;
+      transition: all 0.3s ease;
+      text-align: center;
+      backdrop-filter: blur(10px);
+    }
+
+    .hobby-card:hover {
+      border-color: var(--primary-cyan);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 240, 255, 0.15);
+    }
+
+    .hobby-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .hobby-card h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .hobby-card p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .music-container {
+      background: var(--card-bg);
+      border: 1px solid rgba(112, 0, 255, 0.3);
+      border-radius: 20px;
+      padding: 2.5rem;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 0 30px rgba(112, 0, 255, 0.1);
+    }
+
+    .player-header {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .album-cover {
+      width: 140px;
+      height: 140px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+      object-fit: cover;
+      border: 2px solid var(--primary-cyan);
+    }
+
+    .player-info h3 {
+      font-size: 1.5rem;
+      margin-bottom: 0.3rem;
+      color: var(--primary-cyan);
+    }
+
+    .player-info p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .main-player-controls {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .ctrl-btn {
+      padding: 0.5rem 1.2rem;
+      background: rgba(0, 240, 255, 0.1);
+      border: 1px solid var(--primary-cyan);
+      color: var(--primary-cyan);
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .ctrl-btn:hover {
+      background: var(--primary-cyan);
+      color: var(--bg-dark);
+    }
+
+    .playlist {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .track {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 1.2rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .track:hover, .track.active {
+      background: rgba(0, 240, 255, 0.1);
+      border-color: var(--primary-cyan);
+    }
+
+    .track-details {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .track-num {
+      color: var(--text-muted);
+      font-weight: 600;
+      width: 20px;
+    }
+
+    .track-title {
+      font-weight: 500;
+    }
+
+    .track-artist {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    .play-icon-btn {
+      font-size: 1.2rem;
+      color: var(--primary-cyan);
+    }
+
+    .dreams-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+    }
+
+    .dream-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(0, 240, 255, 0.2);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .dream-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 30px rgba(0, 240, 255, 0.2);
+    }
+
+    .dream-img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+    }
+
+    .dream-content {
+      padding: 1.5rem;
+    }
+
+    .dream-content h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+      color: var(--primary-cyan);
+    }
+
+    .dream-content p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+      header {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      nav ul {
+        gap: 1rem;
+      }
+      h1 {
+        font-size: 2.2rem;
+      }
+      .player-header {
+        flex-direction: column;
+        text-align: center;
+      }
+      .main-player-controls {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="space-canvas"></canvas>
+
+  <header>
+    <div class="logo">SAMUEL</div>
+    <nav>
+      <ul>
+        <li><a href="#sobre">Sobre Mim</a></li>
+        <li><a href="#hobbies">Hobbys</a></li>
+        <li><a href="#musica">Playlist</a></li>
+        <li><a href="#sonhos">Sonhos</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section id="sobre">
+      <div class="hero-container">
+        <div class="bio-card">
+          <span class="badge">Futuro & Tecnologia</span>
+          <h1>Olá, eu sou o <span>Samuel</span></h1>
+          <p>
+            Tenho 18 anos e sou movido por grandes objetivos e desafios. Apaixonado por tecnologia, superação diária nos treinos e produção de conteúdo, estou construindo meu próprio caminho para alcançar a independência e o sucesso.
+          </p>
+          <div class="cta-group">
+            <a href="#sonhos" class="btn btn-primary">Meus Objetivos</a>
+            <a href="#musica" class="btn btn-outline">Ouvir Playlist</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="hobbies">
+      <h2 class="section-title">Hobbys & Estilo de Vida</h2>
+      <div class="hobbies-grid">
+        <div class="hobby-card">
+          <span class="hobby-icon">💪</span>
+          <h3>Treino & Calistenia</h3>
+          <p>Foco e disciplina diária na busca da melhor versão física e mental.</p>
+        </div>
+        <div class="hobby-card">
+          <span class="hobby-icon">🎵</span>
+          <h3>Música Heavy Metal & Dark Rock</h3>
+          <p>Sempre acompanhado pelas batidas marcantes do Nightshade Anthem e Bleed Token.</p>
+        </div>
+        <div class="hobby-card">
+          <span class="hobby-icon">🎬</span>
+          <h3>Edição de Vídeo</h3>
+          <p>Criação de vídeos curtos com frases motivacionais e estilo automotivo.</p>
+        </div>
+        <div class="hobby-card">
+          <span class="hobby-icon">💻</span>
+          <h3>Tecnologia</h3>
+          <p>Explorando programação web, projetos no GitHub e inovação digital.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="musica">
+      <h2 class="section-title">Minhas Músicas Favoritas</h2>
+      <div class="music-container">
+        <div class="player-header">
+          <img id="current-cover" class="album-cover" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><rect width='200' height='200' fill='%23050714'/><circle cx='100' cy='100' r='60' fill='none' stroke='%23ff0055' stroke-width='4'/><path d='M85 70 L135 100 L85 130 Z' fill='%2300f0ff'/></svg>" alt="Capa">
+          <div class="player-info">
+            <h3 id="current-title">You're Gone</h3>
+            <p id="current-artist">Nightshade Anthem • Dark Rock 🎧⚔️</p>
+            <div class="main-player-controls">
+              <button id="play-pause-btn" class="ctrl-btn">▶ Play</button>
+            </div>
+          </div>
+        </div>
+        <div class="playlist" id="playlist-container"></div>
+      </div>
+    </section>
+
+    <section id="sonhos">
+      <h2 class="section-title">Meus Grandes Sonhos</h2>
+      <div class="dreams-grid">
+        <div class="dream-card">
+          <img class="dream-img" src="https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=800&q=80" alt="Yamaha R15 Vermelha">
+          <div class="dream-content">
+            <h3>Yamaha R15 Esportiva</h3>
+            <p>Conquistar minha própria Yamaha R15 Vermelha Esportiva para acelerar nas estradas com estilo e liberdade.</p>
+          </div>
+        </div>
+        <div class="dream-card">
+          <img class="dream-img" src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80" alt="Casa na Praia">
+          <div class="dream-content">
+            <h3>Casa na Praia</h3>
+            <p>Ter um refúgio de alto padrão à beira-mar para relaxar, curtir a natureza e aproveitar as conquistas.</p>
+          </div>
+        </div>
+        <div class="dream-card">
+          <img class="dream-img" src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=800&q=80" alt="Sucesso Profissional">
+          <div class="dream-content">
+            <h3>Sucesso & Independência</h3>
+            <p>Alcançar a estabilidade financeira total e o reconhecimento através do meu próprio esforço e dedicação.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const canvas = document.getElementById('space-canvas');
+    const ctx = canvas.getContext('2d');
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    const stars = [];
+    for (let i = 0; i < 150; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 1.5 + 0.5,
+        alpha: Math.random(),
+        speed: Math.random() * 0.02 + 0.005
+      });
+    }
+
+    function drawSpace() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      stars.forEach(star => {
+        star.alpha += star.speed;
+        if (star.alpha > 1 || star.alpha < 0) star.speed = -star.speed;
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0, 240, 255, ${Math.abs(star.alpha)})`;
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = '#00f0ff';
+        ctx.fill();
+      });
+      requestAnimationFrame(drawSpace);
+    }
+    drawSpace();
+
+    // Músicas apontando para os teus arquivos de áudio
+    const tracks = [
+      { id: 1, title: "You're Gone", artist: "Nightshade Anthem", src: "youre-gone.m4a" },
+      { id: 2, title: "It's Killin' Me", artist: "Nightshade Anthem", src: "its-killin-me.m4a" },
+      { id: 3, title: "Drowning In Yourself", artist: "Nightshade Anthem", src: "drowning-in-yourself.m4a" },
+      { id: 4, title: "In Love With Death", artist: "Nightshade Anthem", src: "in-love-with-death.m4a" },
+      { id: 5, title: "Save Me From Myself", artist: "Bleed Token", src: "save-me-from-myself.m4a" },
+      { id: 6, title: "You're Mine", artist: "Chrisco Entertainment", src: "youre-mine.m4a" }
+    ];
+
+    let currentTrackIndex = 0;
+    let audioElement = new Audio(tracks[0].src);
+    let isPlaying = false;
+
+    const playlistContainer = document.getElementById('playlist-container');
+    const currentTitle = document.getElementById('current-title');
+    const currentArtist = document.getElementById('current-artist');
+    const playPauseBtn = document.getElementById('play-pause-btn');
+
+    function renderPlaylist() {
+      playlistContainer.innerHTML = '';
+      tracks.forEach((track, index) => {
+        const trackEl = document.createElement('div');
+        trackEl.className = `track ${index === currentTrackIndex ? 'active' : ''}`;
+        trackEl.innerHTML = `
+          <div class="track-details">
+            <span class="track-num">${index + 1}</span>
+            <div>
+              <div class="track-title">${track.title}</div>
+              <div class="track-artist">${track.artist}</div>
+            </div>
+          </div>
+          <span class="play-icon-btn">${index === currentTrackIndex && isPlaying ? '⏸' : '▶'}</span>
+        `;
+        
+        trackEl.addEventListener('click', () => {
+          if (currentTrackIndex === index) {
+            togglePlayPause();
+          } else {
+            changeTrack(index);
+          }
+        });
+        playlistContainer.appendChild(trackEl);
+      });
+    }
+
+    function togglePlayPause() {
+      if (isPlaying) {
+        audioElement.pause();
+        isPlaying = false;
+        playPauseBtn.textContent = "▶ Play";
+      } else {
+        audioElement.play();
+        isPlaying = true;
+        playPauseBtn.textContent = "⏸ Pausar";
+      }
+      renderPlaylist();
+    }
+
+    function changeTrack(index) {
+      audioElement.pause();
+      currentTrackIndex = index;
+      audioElement = new Audio(tracks[currentTrackIndex].src);
+      audioElement.play();
+      isPlaying = true;
+      playPauseBtn.textContent = "⏸ Pausar";
+      
+      currentTitle.textContent = tracks[currentTrackIndex].title;
+      currentArtist.textContent = `${tracks[currentTrackIndex].artist} • Faixa ${tracks[currentTrackIndex].id}`;
+      renderPlaylist();
+    }
+
+    playPauseBtn.addEventListener('click', togglePlayPause);
+
+    audioElement.addEventListener('ended', () => {
+      let nextIndex = (currentTrackIndex + 1) % tracks.length;
+      changeTrack(nextIndex);
+    });
+
+    renderPlaylist();
+  </script>
+</body>
+  </html>
+            
